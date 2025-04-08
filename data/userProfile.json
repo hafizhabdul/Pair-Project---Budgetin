@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "UserId": 1,
+        "phoneNumber": 1234567,
+        "createdAt": "2025-04-01T10:00:00Z",
+        "updatedAt": "2025-04-01T10:00:00Z"
+    },
+    {
+        "id": 2,
+        "UserId": 2,
+        "phoneNumber": 2345678,
+        "createdAt": "2025-04-02T12:00:00Z",
+        "updatedAt": "2025-04-02T12:00:00Z"
+    },
+    {
+        "id": 3,
+        "UserId": 3,
+        "phoneNumber": 3456789,
+        "createdAt": "2025-04-03T14:00:00Z",
+        "updatedAt": "2025-04-03T14:00:00Z"
+    }
+]
