@@ -1,0 +1,68 @@
+[
+    {
+        "id": 1,
+        "title": "April Salary",
+        "amount": 3000.00,
+        "type": "income",
+        "date": "2025-04-01",
+        "UserId": 1,
+        "CategoryId": 1,
+        "createdAt": "2025-04-01T10:30:00Z",
+        "updatedAt": "2025-04-01T10:30:00Z"
+    },
+    {
+        "id": 2,
+        "title": "Grocery Shopping",
+        "amount": 150.50,
+        "type": "expense",
+        "date": "2025-04-02",
+        "UserId": 1,
+        "CategoryId": 2,
+        "createdAt": "2025-04-02T09:00:00Z",
+        "updatedAt": "2025-04-02T09:00:00Z"
+    },
+    {
+        "id": 3,
+        "title": "Electricity Bill",
+        "amount": 80.00,
+        "type": "expense",
+        "date": "2025-04-03",
+        "UserId": 1,
+        "CategoryId": 3,
+        "createdAt": "2025-04-03T11:00:00Z",
+        "updatedAt": "2025-04-03T11:00:00Z"
+    },
+    {
+        "id": 4,
+        "title": "Freelance Project",
+        "amount": 500.00,
+        "type": "income",
+        "date": "2025-04-04",
+        "UserId": 2,
+        "CategoryId": 5,
+        "createdAt": "2025-04-04T14:00:00Z",
+        "updatedAt": "2025-04-04T14:00:00Z"
+    },
+    {
+        "id": 5,
+        "title": "Movie Night",
+        "amount": 25.00,
+        "type": "expense",
+        "date": "2025-04-05",
+        "UserId": 2,
+        "CategoryId": 4,
+        "createdAt": "2025-04-05T18:00:00Z",
+        "updatedAt": "2025-04-05T18:00:00Z"
+    },
+    {
+        "id": 6,
+        "title": "Water Bill",
+        "amount": 40.00,
+        "type": "expense",
+        "date": "2025-04-06",
+        "UserId": 3,
+        "CategoryId": 3,
+        "createdAt": "2025-04-06T10:00:00Z",
+        "updatedAt": "2025-04-06T10:00:00Z"
+    }
+]

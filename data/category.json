@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "name": "Salary",
+        "createdAt": "2025-04-01T08:00:00Z",
+        "updatedAt": "2025-04-01T08:00:00Z"
+    },
+    {
+        "id": 2,
+        "name": "Groceries",
+        "createdAt": "2025-04-01T08:00:00Z",
+        "updatedAt": "2025-04-01T08:00:00Z"
+    },
+    {
+        "id": 3,
+        "name": "Utilities",
+        "createdAt": "2025-04-01T08:00:00Z",
+        "updatedAt": "2025-04-01T08:00:00Z"
+    },
+    {
+        "id": 4,
+        "name": "Entertainment",
+        "createdAt": "2025-04-01T08:00:00Z",
+        "updatedAt": "2025-04-01T08:00:00Z"
+    },
+    {
+        "id": 5,
+        "name": "Freelance",
+        "createdAt": "2025-04-01T08:00:00Z",
+        "updatedAt": "2025-04-01T08:00:00Z"
+    }
+]

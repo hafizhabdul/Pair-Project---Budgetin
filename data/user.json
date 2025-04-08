@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "name": "Alice Smith",
+        "email": "alice.smith@example.com",
+        "password": "hashedpassword1",
+        "role": "admin",
+        "createdAt": "2025-04-01T10:00:00Z",
+        "updatedAt": "2025-04-01T10:00:00Z"
+    },
+    {
+        "id": 2,
+        "name": "Bob Johnson",
+        "email": "bob.johnson@example.com",
+        "password": "hashedpassword2",
+        "role": "user",
+        "createdAt": "2025-04-02T12:00:00Z",
+        "updatedAt": "2025-04-02T12:00:00Z"
+    },
+    {
+        "id": 3,
+        "name": "Clara Davis",
+        "email": "clara.davis@example.com",
+        "password": "hashedpassword3",
+        "role": "user",
+        "createdAt": "2025-04-03T14:00:00Z",
+        "updatedAt": "2025-04-03T14:00:00Z"
+    }
+]
