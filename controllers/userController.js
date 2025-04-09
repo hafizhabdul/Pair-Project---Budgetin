@@ -34,7 +34,7 @@ class UserController {
                 if (isValidPassword) {
                     req.session.userId = user.id; // Pastikan ini disetel
                     req.session.role = user.role;
-                    return res.redirect('/');
+                    return res.redirect('/dashboard');
                 } else {
                     const error = 'Invalid email/password';
                     return res.redirect(`/login?error=${error}`);
@@ -47,9 +47,9 @@ class UserController {
             res.send(error);
         }
     }
-    static async getLogout(req,res){
+    static async getLogout(req, res) {
         try {
-            req.session.destroy((err)=>{
+            req.session.destroy((err) => {
                 if (err) res.send(err);
                 else {
                     res.redirect('/login')
@@ -57,6 +57,44 @@ class UserController {
             })
         } catch (error) {
             res.send(error)
+        }
+    }
+    static async profileForm(req, res) {
+        try {
+            const userId = req.session.userId;
+            const user = await User.findByPk(userId);
+            if (!user) {
+                throw new Error('Pengguna tidak ditemukan');
+            }
+            res.render('profile.ejs', { user });
+        } catch (error) {
+            res.send(error);
+        }
+    }
+
+    static async updateProfile(req, res) {
+        try {
+            const userId = req.session.userId;
+            const { name, email, password } = req.body;
+
+            // Data yang akan diperbarui
+            const updatedData = { name, email };
+
+            // Jika password diisi, hash password baru
+            if (password) {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                updatedData.password = hashedPassword;
+            }
+
+            // Update data pengguna
+            await User.update(updatedData, { where: { id: userId } });
+
+            // Redirect dengan pesan sukses
+            const successMessage = encodeURIComponent('Profil berhasil diperbarui');
+            res.redirect(`/dashboard?success=${successMessage}`);
+        } catch (error) {
+            const user = await User.findByPk(req.session.userId);
+            res.render('profile.ejs', { user, error: error.message });
         }
     }
 }

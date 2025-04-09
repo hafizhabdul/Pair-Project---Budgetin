@@ -1,5 +1,13 @@
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
+const { sequelize } = require('../models');
 const { UserProfile, User, Transaction, Category, UserCategory } = require('../models'); class Controller {
+    static async landingPage(req, res) {
+        try {
+            res.render('landing.ejs');
+        } catch (error) {
+            res.send(error);
+        }
+    }
     static async home(req, res) {
         try {
             const userId = req.session.userId;
@@ -89,7 +97,7 @@ const { UserProfile, User, Transaction, Category, UserCategory } = require('../m
     static async addTransaction(req, res) {
         try {
             let category = await Category.findAll();
-            res.render('addTransaction.ejs', { category }); // Tidak perlu mengirimkan user
+            res.render('addTransaction.ejs', { category, errors: {} });
         } catch (error) {
             res.send(error);
         }
@@ -109,29 +117,29 @@ const { UserProfile, User, Transaction, Category, UserCategory } = require('../m
             });
 
             const successMessage = encodeURIComponent('Transaksi berhasil ditambahkan');
-            res.redirect(`/?success=${successMessage}`);
+            res.redirect(`/dashboard?success=${successMessage}`);
         } catch (error) {
             const category = await Category.findAll();
-            res.render('addTransaction.ejs', { category, error: error.errors ? error.errors.map(err => err.message).join(', ') : error.message });
+            // Buat objek error berdasarkan field
+            let errors = {};
+            if (error.errors) {
+                error.errors.forEach(err => {
+                    errors[err.path] = err.message; // err.path adalah nama field (misalnya 'title', 'amount'), err.message adalah pesan error
+                });
+            } else {
+                errors.general = error.message; // Jika error bukan dari validasi Sequelize
+            }
+            res.render('addTransaction.ejs', { category, errors });
         }
     }
 
-    static async addCategory(req, res) {
-        try {
-            const { name } = req.body;
-            await Category.create({ name });
-            res.redirect('/categories');
-        } catch (error) {
-            const categories = await Category.findAll();
-            res.render('categoryList.ejs', { categories, error: error.errors ? error.errors.map(err => err.message).join(', ') : error.message });
-        }
-    }
+
     static async editTransaction(req, res) {
         try {
             const { id } = req.params;
             const transaction = await Transaction.findByPk(id, { include: Category });
             const categories = await Category.findAll();
-            res.render('editTransaction.ejs', { transaction, categories });
+            res.render('editTransaction.ejs', { transaction, categories, errors: {} });
         } catch (error) {
             throw error;
         }
@@ -146,9 +154,19 @@ const { UserProfile, User, Transaction, Category, UserCategory } = require('../m
                 { where: { id } }
             );
             const successMessage = encodeURIComponent('Transaksi berhasil diedit');
-            res.redirect(`/?success=${successMessage}`);
+            res.redirect(`/dashboard?success=${successMessage}`);
         } catch (error) {
-            throw error;
+            const transaction = await Transaction.findByPk(req.params.id, { include: Category });
+            const categories = await Category.findAll();
+            let errors = {};
+            if (error.errors) {
+                error.errors.forEach(err => {
+                    errors[err.path] = err.message;
+                });
+            } else {
+                errors.general = error.message;
+            }
+            res.render('editTransaction.ejs', { transaction, categories, errors });
         }
     }
     static async deleteTransaction(req, res) {
@@ -156,19 +174,12 @@ const { UserProfile, User, Transaction, Category, UserCategory } = require('../m
             const { id } = req.params;
             await Transaction.destroy({ where: { id } });
             const deleteMessage = encodeURIComponent('Transaksi berhasil dihapus');
-            res.redirect(`/?success=${deleteMessage}`);
+            res.redirect(`/dashboard?success=${deleteMessage}`);
         } catch (error) {
             throw error;
         }
     }
-    static async categoryList(req, res) {
-        try {
-            const categories = await Category.findAll();
-            res.render('categoryList.ejs', { categories });
-        } catch (error) {
-            throw error;
-        }
-    }
+
 }
 
 module.exports = Controller
