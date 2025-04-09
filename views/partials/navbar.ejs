@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        /* Ubah warna background navbar */
+        .navbar-custom {
+            background-color: #4e5f8b; /* Warna background yang diminta */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sesuaikan warna teks navbar */
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link,
+        .navbar-custom .navbar-text {
+            color: #ffffff; /* Warna putih untuk kontras */
+        }
+
+        /* Efek hover pada link */
+        .navbar-custom .nav-link:hover {
+            color: #d1d5db; /* Abu-abu muda untuk hover */
+        }
+
+        /* Warna tombol logout */
+        .navbar-custom .btn-outline-light {
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+
+        /* Efek hover pada tombol logout */
+        .navbar-custom .btn-outline-light:hover {
+            background-color: #ffffff;
+            color: #4e5f8b; /* Warna background navbar untuk teks saat hover */
+        }
+
+        /* Warna ikon toggler di mobile */
+        .navbar-custom .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Warna border toggler */
+        .navbar-custom .navbar-toggler {
+            border-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Budgetin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/"><i class="fas fa-home me-1"></i> Beranda</a>
+                    </li>
+                </ul>
+                <span class="navbar-text me-3">
+                    Selamat datang, <%= user ? user.name : 'Guest' %>!
+                </span>
+                <a class="btn btn-outline-light" href="/logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

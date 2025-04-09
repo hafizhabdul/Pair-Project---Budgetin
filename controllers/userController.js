@@ -27,21 +27,34 @@ class UserController {
     }
     static async postLogin(req, res) {
         try {
-            const { email, password } = req.body
-            let user = await User.findOne({ where: { email } })
+            const { email, password } = req.body;
+            let user = await User.findOne({ where: { email } });
             if (user) {
-                const isValidPassword = await bcrypt.compare(password, user.password)
-
+                const isValidPassword = await bcrypt.compare(password, user.password);
                 if (isValidPassword) {
-                    return res.redirect('/')
+                    req.session.userId = user.id; // Pastikan ini disetel
+                    req.session.role = user.role;
+                    return res.redirect('/');
                 } else {
-                    const error = 'Invalid email/password'
-                    return res.redirect(`/login?error=${error}`)
+                    const error = 'Invalid email/password';
+                    return res.redirect(`/login?error=${error}`);
                 }
             } else {
-                const error = 'Invalid email/password'
-                return res.redirect(`/login?error=${error}`)
+                const error = 'Invalid email/password';
+                return res.redirect(`/login?error=${error}`);
             }
+        } catch (error) {
+            res.send(error);
+        }
+    }
+    static async getLogout(req,res){
+        try {
+            req.session.destroy((err)=>{
+                if (err) res.send(err);
+                else {
+                    res.redirect('/login')
+                }
+            })
         } catch (error) {
             res.send(error)
         }

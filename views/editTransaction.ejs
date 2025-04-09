@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Transaction</title>
+</head>
+<body>
+    <%- include('partials/navbar') %>
+    <div class="container">
+        <form action="/transaction/add" method="post">
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">Title</label>
+              <input type="text" class="form-control" name="title">
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label">Amount</label>
+              <input type="text" class="form-control" id="exampleInputPassword1" name="amount">
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label">Type</label>
+              <select name="type">
+                <option value="" selected disabled>Choose...</option>
+                <option value="income">income</option>
+                <option value="expense">expense</option>
+              </select>
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Date</label>
+                <input name="date" type="date" class="form-control" id="exampleInputPassword1" >
+              </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">CategoryId</label>
+                <select name="CategoryId" id="">
+                    <option value="" selected disabled>Choose...</option>
+                    <% categories.forEach(el => { %>
+                        <option value="<%= el.id %>"><%= el.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <%- include('partials/scripts') %>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Category</title>
+</head>
+
+<body>
+    <%- include('partials/navbar') %>
+    <div class="container">
+        <h1>Manage Categories</h1>
+        <form action="/categories/add" method="post">
+            <input type="text" name="name" placeholder="Category Name">
+            <button type="submit">Add Category</button>
+        </form>
+        <ul>
+            <% categories.forEach(category=> { %>
+                <li>
+                    <%= category.name %>
+                </li>
+                <% }) %>
+        </ul>
+    </div>
+    <%- include('partials/scripts') %>
+</body>
+
+</html>

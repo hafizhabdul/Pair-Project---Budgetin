@@ -1,24 +1,34 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Category extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      Category.hasMany(models.Transaction, {foreignKey: 'CategoryId'})
-      Category.belongsToMany(models.User, {through: models.UserCategory})
+      Category.hasMany(models.Transaction, { foreignKey: 'CategoryId' });
+      Category.belongsToMany(models.User, { through: models.UserCategory });
+    }
+
+    static async getCategoryByName(name) {
+      return await this.findOne({ where: { name } });
     }
   }
+
   Category.init({
-    name: DataTypes.STRING
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: 'Nama kategori tidak boleh kosong!' },
+        notNull: { msg: 'Nama kategori tidak boleh null!' },
+        len: {
+          args: [3, 50],
+          msg: 'Nama kategori harus antara 3 hingga 50 karakter!'
+        }
+      }
+    }
   }, {
     sequelize,
     modelName: 'Category',
   });
+
   return Category;
 };
