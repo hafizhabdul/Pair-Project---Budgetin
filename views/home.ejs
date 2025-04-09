@@ -1,41 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Budgetin - Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .filter-form {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-outline-warning, .btn-outline-danger {
+            border-radius: 8px;
+            padding: 5px 15px;
+            font-weight: 500;
+        }
+
+        .chart-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <%- include('navbar') %>
-    <!-- <%= JSON.stringify(data) %> -->
-    <div class="container">
-        <h1>Transaction</h1>
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">No.</th>
-                <th scope="col">Title</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Type</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-                <% data.forEach((el,i) => { %>
+    <%- include('partials/navbar') %>
+    <div class="container mt-5">
+        <!-- Dashboard Keuangan -->
+        <h1><i class="fas fa-wallet me-2"></i> Dashboard Keuangan</h1>
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body d-flex align-items-center">
+                        <i class="fas fa-arrow-up card-icon me-3"></i>
+                        <div>
+                            <h5 class="card-title">Total Pemasukan</h5>
+                            <p class="card-text"><%= formatCurrency(totalIncome) %></p>                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-danger mb-3">
+                    <div class="card-body d-flex align-items-center">
+                        <i class="fas fa-arrow-down card-icon me-3"></i>
+                        <div>
+                            <h5 class="card-title">Total Pengeluaran</h5>
+                            <p class="card-text"><%= formatCurrency(totalExpense) %></p>                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white <%= balance >= 0 ? 'bg-info' : 'bg-warning' %> mb-3">
+                    <div class="card-body d-flex align-items-center">
+                        <i class="fas fa-balance-scale card-icon me-3"></i>
+                        <div>
+                            <h5 class="card-title">Saldo</h5>
+                            <p class="card-text">Rp <%= balance.toLocaleString('id-ID') %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-container">
+            <h2 class="h4"><i class="fas fa-chart-bar me-2"></i> Ringkasan Keuangan</h2>
+            <canvas id="financeChart" height="100"></canvas>
+        </div>
+
+       <!-- Filter Form -->
+        <div class="filter-form">
+            <form method="GET" action="/dashboard" class="row g-3 align-items-center">
+                <!-- Filter Tipe -->
+                <div class="col-md-3">
+                    <select name="filterType" class="form-select">
+                        <option value="" <%= !filterType ? 'selected' : '' %>>Semua Tipe</option>
+                        <option value="income" <%= filterType === 'income' ? 'selected' : '' %>>Pemasukan</option>
+                        <option value="expense" <%= filterType === 'expense' ? 'selected' : '' %>>Pengeluaran</option>
+                    </select>
+                </div>
+                <!-- Filter Kategori -->
+                <div class="col-md-3">
+                    <select name="filterCategory" class="form-select">
+                        <option value="" <%= !filterCategory ? 'selected' : '' %>>Semua Kategori</option>
+                        <% categories.forEach(category => { %>
+                            <option value="<%= category.id %>" <%= filterCategory == category.id ? 'selected' : '' %>><%= category.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <!-- Filter Sort By -->
+                <div class="col-md-3">
+                    <select name="sortBy" class="form-select">
+                        <option value="" <%= !sortBy ? 'selected' : '' %>>Urutkan Berdasarkan</option>
+                        <option value="amount" <%= sortBy === 'amount' ? 'selected' : '' %>>Jumlah</option>
+                        <option value="date" <%= sortBy === 'date' ? 'selected' : '' %>>Tanggal</option>
+                    </select>
+                </div>
+                <!-- Filter Pencarian Title -->
+                <div class="col-md-3">
+                    <input type="text" name="searchTitle" class="form-control" placeholder="Cari judul..." value="<%= searchTitle || '' %>">
+                </div>
+                <!-- Filter Tanggal Mulai -->
+                <div class="col-md-3">
+                    <input type="date" name="startDate" class="form-control" value="<%= startDate || '' %>">
+                </div>
+                <!-- Filter Tanggal Selesai -->
+                <div class="col-md-3">
+                    <input type="date" name="endDate" class="form-control" value="<%= endDate || '' %>">
+                </div>
+                <!-- Tombol Filter -->
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-filter me-2"></i> Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tabel Transaksi -->
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1><i class="fas fa-table me-2"></i> Daftar Transaksi</h1>
+                <a class="btn btn-primary" href="/transaction/add"><i class="fas fa-plus me-2"></i> Tambah Transaksi</a>
+            </div>
+            <table class="table table-hover">
+                <thead class="table-light">
                     <tr>
-                      <td><%= i + 1 %></td>
-                      <td><%= el.title %></td>
-                      <td><%= el.amount %></td>
-                      <td><%= el.type %></td>
-                      <td>
-                        <a class="btn btn-outline-warning" href="">Edit</a>
-                        <a class="btn btn-outline-danger" href="">Delete</a>
-                      </td>
+                        <th scope="col">No.</th>
+                        <th scope="col">Judul</th>
+                        <th scope="col">Jumlah</th>
+                        <th scope="col">Tipe</th>
+                        <th scope="col">Tanggal</th>
+                        <th scope="col">Kategori</th>
+                        <th scope="col">Aksi</th>
                     </tr>
-                <% }) %>
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                    <% data.forEach((el, i) => { %>
+                        <tr>
+                            <td><%= i + 1 %></td>
+                            <td><%= el.title %></td>
+                            <td><%= formatCurrency(el.amount) %></td>                            
+                            <td>
+                                <span class="badge <%= el.type === 'income' ? 'bg-success' : 'bg-danger' %>">
+                                    <%= el.type %>
+                                </span>
+                            </td>
+                            <td><%= formatDate(el.date) %></td>
+                            <td><%= el.Category.name %></td>
+                            <td>
+                                <a class="btn btn-outline-warning btn-sm me-2" href="/transaction/edit/<%= el.id %>"><i class="fas fa-edit"></i> Edit</a>
+                                <a class="btn btn-outline-danger btn-sm" onclick="confirmDelete('<%= el.id %>')"><i class="fas fa-trash"></i> Hapus</a>                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                        <a class="page-link" href="?page=<%= currentPage - 1 %>&filterType=<%= filterType || '' %>&filterCategory=<%= filterCategory || '' %>&sortBy=<%= sortBy || '' %>">Previous</a>
+                    </li>
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>&filterType=<%= filterType || '' %>&filterCategory=<%= filterCategory || '' %>&sortBy=<%= sortBy || '' %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                    <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                        <a class="page-link" href="?page=<%= currentPage + 1 %>&filterType=<%= filterType || '' %>&filterCategory=<%= filterCategory || '' %>&sortBy=<%= sortBy || '' %>">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
-    <%- include('scripts') %>
+
+    <!-- Bootstrap JS dan Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('financeChart').getContext('2d');
+        const financeChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Pemasukan', 'Pengeluaran', 'Saldo'],
+                datasets: [{
+                    label: 'Keuangan',
+                    data: [<%= totalIncome %>, <%= totalExpense %>, <%= balance %>],
+                    backgroundColor: ['#28a745', '#dc3545', '#17a2b8'],
+                    borderColor: ['#1e7e34', '#c82333', '#138496'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        <% if (success && typeof success === 'string') { %>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '<%= success %>',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        <% } %>
+    </script>
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Transaksi ini akan dihapus secara permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/transaction/delete/${id}`;
+                }
+            });
+        }
+    </script>
+    <%- include('partials/scripts') %>
 </body>
+
 </html>

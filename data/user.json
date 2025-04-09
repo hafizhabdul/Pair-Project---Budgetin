@@ -1,9 +1,9 @@
 [
     {
         "id": 1,
-        "name": "Alice Smith",
-        "email": "alice.smith@example.com",
-        "password": "hashedpassword1",
+        "name": "admin",
+        "email": "admin@gmail.com",
+        "password": "$2a$10$3zX9kYvW5qJ2pL8mN7oR.uK1t2v3w4x5y6z7a8b9c0d1e2f3g4h5i",
         "role": "admin",
         "createdAt": "2025-04-01T10:00:00Z",
         "updatedAt": "2025-04-01T10:00:00Z"
@@ -12,7 +12,7 @@
         "id": 2,
         "name": "Bob Johnson",
         "email": "bob.johnson@example.com",
-        "password": "hashedpassword2",
+        "password": "$2a$10$9yX8kWvU4pJ1mL7nR6oS.tJ0t1v2w3x4y5z6a7b8c9d0e1f2g3h4i",
         "role": "user",
         "createdAt": "2025-04-02T12:00:00Z",
         "updatedAt": "2025-04-02T12:00:00Z"
@@ -21,7 +21,7 @@
         "id": 3,
         "name": "Clara Davis",
         "email": "clara.davis@example.com",
-        "password": "hashedpassword3",
+        "password": "$2a$10$5zX7kYvT3pJ0mL6nR5oQ.sH9t0v1w2x3y4z5a6b7c8d9e0f1g2h3i",
         "role": "user",
         "createdAt": "2025-04-03T14:00:00Z",
         "updatedAt": "2025-04-03T14:00:00Z"
