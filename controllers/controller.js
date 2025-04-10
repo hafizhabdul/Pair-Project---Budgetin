@@ -21,7 +21,7 @@ class Controller {
             const role = req.session.role;
             const { filterType, filterCategory, sortBy, searchTitle, startDate, endDate, page = 1, success } = req.query;
 
-            const limit = 10; // Jumlah transaksi per halaman
+            const limit = 5; // Jumlah transaksi per halaman
             const offset = (page - 1) * limit;
 
             let whereClause = role === 'admin' ? {} : { UserId: userId };

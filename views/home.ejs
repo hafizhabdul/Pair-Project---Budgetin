@@ -176,6 +176,9 @@
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-primary w-100"><i class="fas fa-filter me-2"></i> Filter</button>
                 </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-secondary w-100" onclick="resetFilters()">Reset Filter</button>
+                </div>
             </form>
         </div>
 
@@ -286,6 +289,10 @@
                     }
                 }
             });
+        }
+        // Reset Filter 
+        function resetFilters() {
+            window.location.href = "/dashboard";
         }
 
         // Event listener untuk inisialisasi chart saat modal dibuka
