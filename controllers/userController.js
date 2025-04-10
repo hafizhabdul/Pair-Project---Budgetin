@@ -1,30 +1,53 @@
-const { User } = require('../models')
-const bcrypt = require('bcryptjs')
+const { User } = require('../models');
+const bcrypt = require('bcryptjs');
+
 class UserController {
     static async registerForm(req, res) {
         try {
-            res.render('register.ejs')
+            res.render('register.ejs', { error: null, name: '', email: '' });
         } catch (error) {
-            res.send(error)
+            res.send(error);
         }
     }
+
     static async postRegister(req, res) {
         try {
-            const { name, email, password, role } = req.body
-            await User.create({ name, email, password, role })
-            res.redirect('/login')
+            const { name, email, password, confirmPassword } = req.body;
+
+            if (password !== confirmPassword) {
+                return res.render('register.ejs', { 
+                    error: 'Password dan konfirmasi password tidak cocok!', 
+                    name, 
+                    email 
+                });
+            }
+
+            await User.create({ name, email, password, role: 'user' });
+            res.redirect('/login');
         } catch (error) {
-            res.send(error)
+            let errorMessage = 'Terjadi kesalahan saat registrasi.';
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                errorMessage = 'Email sudah digunakan, silakan gunakan email lain!';
+            } else if (error.name === 'SequelizeValidationError') {
+                errorMessage = error.errors.map(err => err.message).join(', ');
+            }
+            res.render('register.ejs', { 
+                error: errorMessage, 
+                name: req.body.name || '', 
+                email: req.body.email || '' 
+            });
         }
     }
+
     static async loginForm(req, res) {
         try {
-            const { error } = req.query
-            res.render('login.ejs', { error })
+            const { error } = req.query;
+            res.render('login.ejs', { error });
         } catch (error) {
-            res.send(error)
+            res.send(error);
         }
     }
+
     static async postLogin(req, res) {
         try {
             const { email, password } = req.body;
@@ -32,7 +55,7 @@ class UserController {
             if (user) {
                 const isValidPassword = await bcrypt.compare(password, user.password);
                 if (isValidPassword) {
-                    req.session.userId = user.id; // Pastikan ini disetel
+                    req.session.userId = user.id;
                     req.session.role = user.role;
                     return res.redirect('/dashboard');
                 } else {
@@ -47,18 +70,20 @@ class UserController {
             res.send(error);
         }
     }
+
     static async getLogout(req, res) {
         try {
             req.session.destroy((err) => {
                 if (err) res.send(err);
                 else {
-                    res.redirect('/login')
+                    res.redirect('/login');
                 }
-            })
+            });
         } catch (error) {
-            res.send(error)
+            res.send(error);
         }
     }
+
     static async profileForm(req, res) {
         try {
             const userId = req.session.userId;
@@ -77,19 +102,13 @@ class UserController {
             const userId = req.session.userId;
             const { name, email, password } = req.body;
 
-            // Data yang akan diperbarui
             const updatedData = { name, email };
-
-            // Jika password diisi, hash password baru
             if (password) {
                 const hashedPassword = await bcrypt.hash(password, 10);
                 updatedData.password = hashedPassword;
             }
 
-            // Update data pengguna
             await User.update(updatedData, { where: { id: userId } });
-
-            // Redirect dengan pesan sukses
             const successMessage = encodeURIComponent('Profil berhasil diperbarui');
             res.redirect(`/dashboard?success=${successMessage}`);
         } catch (error) {
@@ -99,4 +118,4 @@ class UserController {
     }
 }
 
-module.exports = UserController
+module.exports = UserController;

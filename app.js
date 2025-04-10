@@ -10,7 +10,7 @@ app.locals.formatDate = formatDate;
 
 app.set("view engine", 'ejs')
 app.use(express.urlencoded({ extended: false }))
-
+app.use(express.static('public'));
 app.use(session({
   secret: 'keyboard cat',
   resave: false,

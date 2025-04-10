@@ -41,8 +41,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Jumlah tidak boleh null!' },
-        notEmpty: { msg: 'Jumlah tidak boleh kosong!' }, // Tambahkan validasi notEmpty
-        isDecimal: { msg: 'Jumlah harus berupa angka desimal!' }, // Pastikan input adalah angka
+        notEmpty: { msg: 'Jumlah tidak boleh kosong!' }, 
+        isDecimal: { msg: 'Jumlah harus berupa angka desimal!' }, 
         isPositive(value) {
           if (parseFloat(value) <= 0) {
             throw new Error('Jumlah harus lebih besar dari 0!');
@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Tipe tidak boleh null!' },
-        notEmpty: { msg: 'Tipe tidak boleh kosong!' }, // Tambahkan validasi notEmpty
+        notEmpty: { msg: 'Tipe tidak boleh kosong!' }, 
         isIn: {
           args: [['income', 'expense']],
           msg: 'Tipe harus income atau expense!'
@@ -64,10 +64,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     date: {
       type: DataTypes.DATE,
-      allowNull: false, // Tambahkan allowNull: false
+      allowNull: false,
       validate: {
         notNull: { msg: 'Tanggal tidak boleh null!' },
-        notEmpty: { msg: 'Tanggal tidak boleh kosong!' }, // Tambahkan validasi notEmpty
+        notEmpty: { msg: 'Tanggal tidak boleh kosong!' },
         notInFuture(value) {
           if (new Date(value) > new Date()) {
             throw new Error('Tanggal tidak boleh di masa depan!');
@@ -87,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Kategori tidak boleh null!' },
-        notEmpty: { msg: 'Kategori tidak boleh kosong!' } // Tambahkan validasi notEmpty
+        notEmpty: { msg: 'Kategori tidak boleh kosong!' }
       }
     }
   }, {
