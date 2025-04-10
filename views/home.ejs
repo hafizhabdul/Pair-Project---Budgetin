@@ -1,47 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budgetin - Dashboard</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome untuk ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             background-color: #f8f9fa;
             font-family: 'Poppins', sans-serif;
         }
-
-        .navbar {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-
         .card {
             border: none;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
+            animation: fadeIn 0.5s ease-in;
         }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
+        .card-income { background: linear-gradient(135deg, #28a745, #48c78e); }
+        .card-expense { background: linear-gradient(135deg, #dc3545, #f16a7a); }
+        .card-balance { background: linear-gradient(135deg, #17a2b8, #4ecdc4); }
+        .card:hover { transform: translateY(-5px); }
+        .card-icon { font-size: 2rem; margin-bottom: 10px; }
+        .card-text { font-size: 1.8rem; }
         .filter-form {
             background-color: #fff;
             padding: 15px;
@@ -49,14 +32,17 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             margin-bottom: 20px;
         }
-
         .table-container {
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             padding: 20px;
         }
-
+        .table-hover tbody tr:hover {
+            background-color: #f1f3f5;
+            transform: scale(1.02);
+            transition: all 0.2s ease;
+        }
         .btn-primary {
             background-color: #007bff;
             border: none;
@@ -65,67 +51,76 @@
             font-weight: 500;
             transition: background-color 0.3s ease;
         }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
+        .btn-primary:hover { background-color: #0056b3; }
+        .fab-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
         }
-
-        .btn-outline-warning, .btn-outline-danger {
-            border-radius: 8px;
-            padding: 5px 15px;
-            font-weight: 500;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
-
-        .chart-container {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 20px;
-            margin-bottom: 20px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        h1 {
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 20px;
+        .chart-toggle-btn {
+            background: linear-gradient(90deg, #4e5f8b, #7b89b3);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            transition: all 0.3s ease;
         }
-
-        @media (max-width: 768px) {
-            .card {
-                margin-bottom: 15px;
-            }
+        .chart-toggle-btn:hover {
+            background: linear-gradient(90deg, #7b89b3, #4e5f8b);
+            box-shadow: 0 0 10px rgba(78, 95, 139, 0.5);
         }
+        h1 { font-weight: 700; color: #333; margin-bottom: 20px; }
+        @media (max-width: 768px) { .card { margin-bottom: 15px; } }
     </style>
 </head>
-
 <body>
     <%- include('partials/navbar') %>
     <div class="container mt-5">
-        <!-- Dashboard Keuangan -->
         <h1><i class="fas fa-wallet me-2"></i> Dashboard Keuangan</h1>
         <div class="row mb-4">
             <div class="col-md-4">
-                <div class="card text-white bg-success mb-3">
+                <div class="card text-white card-income mb-3">
                     <div class="card-body d-flex align-items-center">
                         <i class="fas fa-arrow-up card-icon me-3"></i>
                         <div>
                             <h5 class="card-title">Total Pemasukan</h5>
-                            <p class="card-text"><%= formatCurrency(totalIncome) %></p>                        </div>
+                            <p class="card-text"><%= formatCurrency(totalIncome) %></p>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card text-white bg-danger mb-3">
+                <div class="card text-white card-expense mb-3">
                     <div class="card-body d-flex align-items-center">
                         <i class="fas fa-arrow-down card-icon me-3"></i>
                         <div>
                             <h5 class="card-title">Total Pengeluaran</h5>
-                            <p class="card-text"><%= formatCurrency(totalExpense) %></p>                        </div>
+                            <p class="card-text"><%= formatCurrency(totalExpense) %></p>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card text-white <%= balance >= 0 ? 'bg-info' : 'bg-warning' %> mb-3">
+                <div class="card text-white card-balance mb-3">
                     <div class="card-body d-flex align-items-center">
                         <i class="fas fa-balance-scale card-icon me-3"></i>
                         <div>
@@ -137,16 +132,16 @@
             </div>
         </div>
 
-        <!-- Chart -->
-        <div class="chart-container">
-            <h2 class="h4"><i class="fas fa-chart-bar me-2"></i> Ringkasan Keuangan</h2>
-            <canvas id="financeChart" height="100"></canvas>
+        <!-- Tombol untuk membuka modal grafik -->
+        <div class="mb-3">
+            <button class="chart-toggle-btn" data-bs-toggle="modal" data-bs-target="#chartModal">Lihat Grafik</button>
+            <a href="/dashboard/export/csv" class="btn btn-success ms-2"><i class="fas fa-file-csv me-1"></i> Ekspor CSV</a>
+            <a href="/dashboard/export/pdf" class="btn btn-danger ms-2"><i class="fas fa-file-pdf me-1"></i> Ekspor PDF</a>
         </div>
 
-       <!-- Filter Form -->
+        <!-- Filter Form -->
         <div class="filter-form">
             <form method="GET" action="/dashboard" class="row g-3 align-items-center">
-                <!-- Filter Tipe -->
                 <div class="col-md-3">
                     <select name="filterType" class="form-select">
                         <option value="" <%= !filterType ? 'selected' : '' %>>Semua Tipe</option>
@@ -154,7 +149,6 @@
                         <option value="expense" <%= filterType === 'expense' ? 'selected' : '' %>>Pengeluaran</option>
                     </select>
                 </div>
-                <!-- Filter Kategori -->
                 <div class="col-md-3">
                     <select name="filterCategory" class="form-select">
                         <option value="" <%= !filterCategory ? 'selected' : '' %>>Semua Kategori</option>
@@ -163,7 +157,6 @@
                         <% }) %>
                     </select>
                 </div>
-                <!-- Filter Sort By -->
                 <div class="col-md-3">
                     <select name="sortBy" class="form-select">
                         <option value="" <%= !sortBy ? 'selected' : '' %>>Urutkan Berdasarkan</option>
@@ -171,19 +164,15 @@
                         <option value="date" <%= sortBy === 'date' ? 'selected' : '' %>>Tanggal</option>
                     </select>
                 </div>
-                <!-- Filter Pencarian Title -->
                 <div class="col-md-3">
                     <input type="text" name="searchTitle" class="form-control" placeholder="Cari judul..." value="<%= searchTitle || '' %>">
                 </div>
-                <!-- Filter Tanggal Mulai -->
                 <div class="col-md-3">
                     <input type="date" name="startDate" class="form-control" value="<%= startDate || '' %>">
                 </div>
-                <!-- Filter Tanggal Selesai -->
                 <div class="col-md-3">
                     <input type="date" name="endDate" class="form-control" value="<%= endDate || '' %>">
                 </div>
-                <!-- Tombol Filter -->
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-primary w-100"><i class="fas fa-filter me-2"></i> Filter</button>
                 </div>
@@ -194,7 +183,6 @@
         <div class="table-container">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h1><i class="fas fa-table me-2"></i> Daftar Transaksi</h1>
-                <a class="btn btn-primary" href="/transaction/add"><i class="fas fa-plus me-2"></i> Tambah Transaksi</a>
             </div>
             <table class="table table-hover">
                 <thead class="table-light">
@@ -213,22 +201,21 @@
                         <tr>
                             <td><%= i + 1 %></td>
                             <td><%= el.title %></td>
-                            <td><%= formatCurrency(el.amount) %></td>                            
-                            <td>
-                                <span class="badge <%= el.type === 'income' ? 'bg-success' : 'bg-danger' %>">
-                                    <%= el.type %>
-                                </span>
-                            </td>
+                            <td><%= formatCurrency(el.amount) %></td>
+                            <td><span class="badge <%= el.type === 'income' ? 'bg-success' : 'bg-danger' %>"><%= el.type %></span></td>
                             <td><%= formatDate(el.date) %></td>
                             <td><%= el.Category.name %></td>
                             <td>
                                 <a class="btn btn-outline-warning btn-sm me-2" href="/transaction/edit/<%= el.id %>"><i class="fas fa-edit"></i> Edit</a>
-                                <a class="btn btn-outline-danger btn-sm" onclick="confirmDelete('<%= el.id %>')"><i class="fas fa-trash"></i> Hapus</a>                            </td>
+                                <a class="btn btn-outline-danger btn-sm" onclick="confirmDelete('<%= el.id %>')"><i class="fas fa-trash"></i> Hapus</a>
+                            </td>
                         </tr>
                     <% }) %>
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination -->
         <div class="d-flex justify-content-center mt-4">
             <nav aria-label="Page navigation">
                 <ul class="pagination">
@@ -246,48 +233,68 @@
                 </ul>
             </nav>
         </div>
+
+        <!-- Floating Action Button -->
+        <a class="fab-btn" href="/transaction/add"><i class="fas fa-plus"></i></a>
+    </div>
+
+    <!-- Modal untuk Grafik -->
+    <div class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chartModalLabel"><i class="fas fa-chart-pie me-2"></i> Ringkasan Keuangan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="financeChart"></canvas>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Bootstrap JS dan Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        let chartInstance;
         const ctx = document.getElementById('financeChart').getContext('2d');
-        const financeChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Pemasukan', 'Pengeluaran', 'Saldo'],
-                datasets: [{
-                    label: 'Keuangan',
-                    data: [<%= totalIncome %>, <%= totalExpense %>, <%= balance %>],
-                    backgroundColor: ['#28a745', '#dc3545', '#17a2b8'],
-                    borderColor: ['#1e7e34', '#c82333', '#138496'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+
+        // Fungsi untuk menginisialisasi chart
+        function initChart() {
+            if (chartInstance) chartInstance.destroy(); // Hancurkan chart lama jika ada
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pemasukan', 'Pengeluaran', 'Saldo'],
+                    datasets: [{
+                        data: [<%= totalIncome %>, <%= totalExpense %>, <%= balance %>],
+                        backgroundColor: ['#28a745', '#dc3545', '#17a2b8'],
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
+                options: {
+                    plugins: {
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 10,
+                            cornerRadius: 8,
                         }
                     }
                 }
-            }
+            });
+        }
+
+        // Event listener untuk inisialisasi chart saat modal dibuka
+        const chartModal = document.getElementById('chartModal');
+        chartModal.addEventListener('shown.bs.modal', function () {
+            if (!chartInstance) initChart(); // Inisialisasi chart saat modal pertama kali dibuka
         });
-    </script>
-    <script>
+
+        // SweetAlert untuk pesan sukses
         <% if (success && typeof success === 'string') { %>
             Swal.fire({
                 icon: 'success',
@@ -297,8 +304,8 @@
                 showConfirmButton: false
             });
         <% } %>
-    </script>
-    <script>
+
+        // Fungsi konfirmasi hapus
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -318,5 +325,4 @@
     </script>
     <%- include('partials/scripts') %>
 </body>
-
 </html>

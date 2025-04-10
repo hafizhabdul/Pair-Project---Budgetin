@@ -3,43 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Transaction</title>
+    <title>Edit Transaksi - Budgetin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <%- include('partials/navbar') %>
     <div class="container mt-5">
-        <h2>Edit Transaksi</h2>
+        <h2><i class="fas fa-edit me-2"></i> Edit Transaksi</h2>
         <form action="/transaction/edit/<%= transaction.id %>" method="post">
-            <!-- Field Title -->
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <% if (errors && errors.title) { %>
-                    <div class="alert alert-danger" role="alert">
-                        <%= errors.title %>
-                    </div>
+                    <div class="alert alert-danger" role="alert"><%= errors.title %></div>
                 <% } %>
                 <input type="text" class="form-control <%= errors && errors.title ? 'is-invalid' : '' %>" id="title" name="title" value="<%= transaction.title %>">
             </div>
-
-            <!-- Field Amount -->
             <div class="mb-3">
                 <label for="amount" class="form-label">Amount</label>
                 <% if (errors && errors.amount) { %>
-                    <div class="alert alert-danger" role="alert">
-                        <%= errors.amount %>
-                    </div>
+                    <div class="alert alert-danger" role="alert"><%= errors.amount %></div>
                 <% } %>
                 <input type="number" step="0.01" class="form-control <%= errors && errors.amount ? 'is-invalid' : '' %>" id="amount" name="amount" value="<%= transaction.amount %>">
             </div>
-
-            <!-- Field Type -->
             <div class="mb-3">
                 <label for="type" class="form-label">Type</label>
                 <% if (errors && errors.type) { %>
-                    <div class="alert alert-danger" role="alert">
-                        <%= errors.type %>
-                    </div>
+                    <div class="alert alert-danger" role="alert"><%= errors.type %></div>
                 <% } %>
                 <select name="type" id="type" class="form-select <%= errors && errors.type ? 'is-invalid' : '' %>">
                     <option value="" disabled>Choose...</option>
@@ -47,25 +37,17 @@
                     <option value="expense" <%= transaction.type === 'expense' ? 'selected' : '' %>>Expense</option>
                 </select>
             </div>
-
-            <!-- Field Date -->
             <div class="mb-3">
                 <label for="date" class="form-label">Date</label>
                 <% if (errors && errors.date) { %>
-                    <div class="alert alert-danger" role="alert">
-                        <%= errors.date %>
-                    </div>
+                    <div class="alert alert-danger" role="alert"><%= errors.date %></div>
                 <% } %>
                 <input name="date" type="date" class="form-control <%= errors && errors.date ? 'is-invalid' : '' %>" id="date" value="<%= transaction.date ? transaction.date.toISOString().split('T')[0] : '' %>">
             </div>
-
-            <!-- Field CategoryId -->
             <div class="mb-3">
                 <label for="CategoryId" class="form-label">Category</label>
                 <% if (errors && errors.CategoryId) { %>
-                    <div class="alert alert-danger" role="alert">
-                        <%= errors.CategoryId %>
-                    </div>
+                    <div class="alert alert-danger" role="alert"><%= errors.CategoryId %></div>
                 <% } %>
                 <select name="CategoryId" id="CategoryId" class="form-select <%= errors && errors.CategoryId ? 'is-invalid' : '' %>">
                     <option value="" disabled>Choose...</option>
@@ -74,14 +56,9 @@
                     <% }) %>
                 </select>
             </div>
-
-            <!-- General Error -->
             <% if (errors && errors.general) { %>
-                <div class="alert alert-danger" role="alert">
-                    <%= errors.general %>
-                </div>
+                <div class="alert alert-danger" role="alert"><%= errors.general %></div>
             <% } %>
-
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
